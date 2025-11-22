@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Bit max</string>
+    <string name="logoLoading">Logo Loading</string>
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
+    <string name="coins_list">Coins list</string>
+    <string name="top_gainers">Top Gainers</string>
+    <string name="top_losers">Top Losers</string>
+</resources>
