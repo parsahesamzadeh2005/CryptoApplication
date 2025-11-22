@@ -1,12 +1,13 @@
 package com.example.cryptoapplication.network;
 
+import com.example.cryptoapplication.BuildConfig;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import java.io.IOException;
 
 public class CoinGeckoService {
-    private static final String BASE_URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&x_cg_demo_api_key=CG-1JxNfXW9es36Ub4NAA68YXJq";
+    private static final String BASE_URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&x_cg_demo_api_key=" + BuildConfig.COINGECKO_API_KEY;
 
     public String fetchCoinsJson() throws IOException {
         OkHttpClient client = new OkHttpClient();

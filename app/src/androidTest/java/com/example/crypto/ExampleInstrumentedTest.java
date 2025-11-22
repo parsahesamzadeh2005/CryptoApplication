@@ -1,4 +1,4 @@
-package com.example.cryptoapplication;
+package com.example.crypto;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.example.cryptoapplication", appContext.getPackageName());
+        assertEquals("com.example.crypto", appContext.getPackageName());
     }
 }

@@ -5,45 +5,58 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EDEDED"
+    android:background="?attr/colorSurface"
     tools:context=".ui.home.HomeActivity">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbarHome"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:title="CryptoApp"
+        app:titleCentered="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
         android:id="@+id/logoImage"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
         android:contentDescription="logo"
         android:layout_marginStart="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.027"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbarHome"
         app:srcCompat="@drawable/mianlogo"
         tools:ignore="HardcodedText" />
 
-    <androidx.cardview.widget.CardView
+
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/imageSliderCard"
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/indicatorLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/logoImage">
+        app:layout_constraintTop_toBottomOf="@id/logoImage"
+        app:layout_constraintDimensionRatio="16:9">
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/imageSlider"
             android:layout_width="match_parent"
-            android:layout_height="179dp"
+            android:layout_height="match_parent"
             android:clipChildren="true"
             android:clipToPadding="true" />
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
 
+
+    
     <LinearLayout
         android:id="@+id/indicatorLayout"
         android:layout_width="53dp"
@@ -58,6 +71,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageSliderCard" />
+
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:queryHint="Search coins by name or symbol"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/indicatorLayout" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/coinListRecyclerView"
@@ -77,94 +102,105 @@
         app:layout_constraintTop_toBottomOf="@id/tabLayout"
         app:layout_constraintVertical_bias="1.0" />
 
-    <Button
-        android:id="@+id/btnHome"
-        android:layout_width="160dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/ripple"
-        android:text="@string/home"
-        android:textAllCaps="false"
-        android:textColor="#450BAC"
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/loadingProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnProfile"
-        android:layout_width="160dp"
-        android:layout_height="48dp"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/errorTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Failed to load data. Please try again."
+        android:textColor="?attr/colorError"
+        style="@style/TextAppearance.Material3.BodyLarge"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnHome"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/ripple"
-        android:backgroundTint="#450BAC"
-        android:text="@string/profile"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:text="@string/home"
         android:textAllCaps="false"
-        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.996"
+        app:layout_constraintEnd_toStartOf="@+id/btnProfile"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <LinearLayout
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnProfile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        style="@style/Widget.Material3.Button"
+        android:text="@string/profile"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnHome" />
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/tabLayout"
-        style="?android:attr/buttonBarStyle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:gravity="center"
-        android:orientation="horizontal"
+        app:singleSelection="true"
+        app:selectionRequired="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/indicatorLayout">
+        app:layout_constraintTop_toBottomOf="@id/searchView">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAllCoins"
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/Widget.Material3.Button"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_margin="4dp"
             android:layout_weight="1"
-            android:background="@drawable/tab_selected_bg"
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:text="@string/coins_list"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF" />
+            android:textAllCaps="false" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnTopGainers"
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_margin="4dp"
             android:layout_weight="1"
-            android:background="@drawable/tab_unselected_bg"
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:text="@string/top_gainers"
-            android:textAllCaps="false"
-            android:textColor="#450BAC" />
+            android:textAllCaps="false" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnTopLosers"
-            style="?android:attr/buttonBarButtonStyle"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_margin="4dp"
             android:layout_weight="1"
-            android:background="@drawable/tab_unselected_bg"
             android:minWidth="48dp"
             android:minHeight="48dp"
             android:text="@string/top_losers"
-            android:textAllCaps="false"
-            android:textColor="#450BAC" />
-    </LinearLayout>
+            android:textAllCaps="false" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>

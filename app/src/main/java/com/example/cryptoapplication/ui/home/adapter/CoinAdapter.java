@@ -18,6 +18,7 @@ import java.util.List;
 public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder> {
 
     private List<CoinModel> coinList;
+    private OnCoinClickListener onCoinClickListener;
 
     public CoinAdapter(List<CoinModel> coinList) {
         this.coinList = coinList;
@@ -39,6 +40,15 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
         }
     }
 
+    // Backward-compatible method name used by HomeActivity
+    public void updateCoins(List<CoinModel> newData) {
+        updateData(newData);
+    }
+
+    public void setOnCoinClickListener(OnCoinClickListener listener) {
+        this.onCoinClickListener = listener;
+    }
+
     @Override
     public void onBindViewHolder(@NonNull CoinViewHolder holder, int position) {
         CoinModel coin = coinList.get(position);
@@ -52,6 +62,12 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
                     .placeholder(R.drawable.placeholder_foreground)
                     .error(R.drawable.error_placeholder_foreground)
                     .into(holder.coinImage);
+
+            holder.itemView.setOnClickListener(v -> {
+                if (onCoinClickListener != null) {
+                    onCoinClickListener.onCoinClick(coin);
+                }
+            });
         }
     }
 
@@ -71,5 +87,9 @@ public class CoinAdapter extends RecyclerView.Adapter<CoinAdapter.CoinViewHolder
             coinImage = itemView.findViewById(R.id.coinImage);
 
         }
+    }
+
+    public interface OnCoinClickListener {
+        void onCoinClick(CoinModel coin);
     }
 }

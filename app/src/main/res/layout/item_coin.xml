@@ -14,7 +14,9 @@
         android:layout_marginEnd="12dp"
         android:scaleType="centerCrop"
         android:contentDescription="Coin Image"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 
     <TextView
@@ -24,6 +26,7 @@
         android:layout_marginStart="32dp"
         android:text="Bitcoin"
         android:textSize="16sp"
+        android:textColor="?attr/colorOnSurface"
         app:layout_constraintBaseline_toBaselineOf="@+id/coinPrice"
         app:layout_constraintStart_toEndOf="@+id/coinImage" />
 
@@ -33,6 +36,7 @@
         android:layout_height="wrap_content"
         android:text="$65,000"
         android:textSize="16sp"
+        android:textColor="?attr/colorOnSurface"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -18,20 +18,28 @@
         <activity
             android:name=".ui.profile.ProfileActivity"
             android:exported="false"
-            android:theme="@style/Theme.Design.Light.NoActionBar"/>
+            />
+
+        <activity
+            android:name=".ui.profile.TransactionHistoryActivity"
+            android:exported="false" />
 
         <activity
             android:name=".ui.home.HomeActivity"
             android:exported="false"
-            android:theme="@style/Theme.Design.Light.NoActionBar" />
+            />
+        <activity
+            android:name=".ui.detail.CoinDetailActivity"
+            android:exported="false"
+            />
         <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="false"
-            android:theme="@style/Theme.Design.Light.NoActionBar" />
+            />
         <activity
             android:name=".ui.loading.SplashScreen"
             android:exported="true"
-            android:theme="@style/Theme.Design.Light.NoActionBar">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,7 +49,7 @@
         <activity
             android:name=".ui.auth.RegisterActivity"
             android:exported="false"
-            android:theme="@style/Theme.Design.Light.NoActionBar" />
+            />
     </application>
 
 </manifest>

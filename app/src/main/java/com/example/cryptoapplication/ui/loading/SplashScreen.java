@@ -3,6 +3,7 @@ package com.example.cryptoapplication.ui.loading;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -10,11 +11,14 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.cryptoapplication.R;
+import com.example.cryptoapplication.service.AuthService;
 import com.example.cryptoapplication.ui.auth.LoginActivity;
+import com.example.cryptoapplication.ui.home.HomeActivity;
 
 public class SplashScreen extends AppCompatActivity {
     
     Handler handler;
+    AuthService authService;
 
     ImageView logo;
 
@@ -26,14 +30,24 @@ public class SplashScreen extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        handler= new Handler();
+        // Initialize AuthService
+        authService = new AuthService(this);
+
+        handler= new Handler(Looper.getMainLooper());
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(SplashScreen.this, LoginActivity.class));
+                // Check if user is already logged in
+                if (authService.isLoggedIn()) {
+                    // User is logged in, go to home activity
+                    startActivity(new Intent(SplashScreen.this, HomeActivity.class));
+                } else {
+                    // User is not logged in, go to login activity
+                    startActivity(new Intent(SplashScreen.this, LoginActivity.class));
+                }
                 finish();
             }
-        }, 5000);
+        }, 3000); // Reduced to 3 seconds for better UX
 
         logo = findViewById(R.id.mainLogoLoading);
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.loader);
