@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cryptoapplication.R;
-import com.example.cryptoapplication.database.DatabaseService;
+import com.example.cryptoapplication.database.SimpleDatabaseService;
 import com.example.cryptoapplication.models.CoinModel;
 import com.example.cryptoapplication.models.PortfolioItem;
 
@@ -19,9 +19,9 @@ import java.util.Locale;
 public class WalletAssetsAdapter extends RecyclerView.Adapter<WalletAssetsAdapter.ViewHolder> {
 
     private final List<PortfolioItem> items;
-    private final DatabaseService databaseService;
+    private final SimpleDatabaseService databaseService;
 
-    public WalletAssetsAdapter(List<PortfolioItem> items, DatabaseService databaseService) {
+    public WalletAssetsAdapter(List<PortfolioItem> items, SimpleDatabaseService databaseService) {
         this.items = items;
         this.databaseService = databaseService;
     }
@@ -38,7 +38,7 @@ public class WalletAssetsAdapter extends RecyclerView.Adapter<WalletAssetsAdapte
         PortfolioItem item = items.get(position);
         String displayName = item.getCoinId();
         if (databaseService != null && item.getCoinId() != null) {
-            CoinModel coin = databaseService.getCoinById(item.getCoinId());
+            CoinModel coin = databaseService.findCoinById(item.getCoinId());
             if (coin != null && coin.getName() != null) {
                 displayName = coin.getName();
             }

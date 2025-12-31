@@ -4,6 +4,7 @@ public class PortfolioItem {
     private long id;
     private long userId;
     private String coinId;
+    private double amount;
     private double quantity;
     private double purchasePrice;
     private long purchaseDate;
@@ -25,6 +26,9 @@ public class PortfolioItem {
 
     public String getCoinId() { return coinId; }
     public void setCoinId(String coinId) { this.coinId = coinId; }
+
+    public double getAmount() { return amount; }
+    public void setAmount(double amount) { this.amount = amount; }
 
     public double getQuantity() { return quantity; }
     public void setQuantity(double quantity) { this.quantity = quantity; }

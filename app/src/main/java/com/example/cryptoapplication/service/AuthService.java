@@ -3,7 +3,7 @@ package com.example.cryptoapplication.service;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.cryptoapplication.database.DatabaseService;
+import com.example.cryptoapplication.database.SimpleDatabaseService;
 import com.example.cryptoapplication.models.User;
 
 /**
@@ -18,11 +18,11 @@ public class AuthService {
     private static final String KEY_USER_TOKEN = "user_token";
     
     private final SharedPreferences sharedPreferences;
-    private final DatabaseService databaseService;
+    private final SimpleDatabaseService databaseService;
     
     public AuthService(Context context) {
         this.sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        this.databaseService = DatabaseService.getInstance(context);
+        this.databaseService = SimpleDatabaseService.getInstance(context);
     }
     
     /**
@@ -34,7 +34,7 @@ public class AuthService {
             return new AuthResult(AuthResult.AuthStatus.INVALID_INPUT, null, "Invalid email or password format.");
         }
 
-        User user = databaseService.login(email, password);
+        User user = databaseService.loginUser(email, password);
         if (user != null) {
             // Store authentication state in SharedPreferences for quick access
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -58,11 +58,7 @@ public class AuthService {
             return new AuthResult(AuthResult.AuthStatus.INVALID_INPUT, null, "Invalid username, email, or password format.");
         }
 
-        if (databaseService.getUserByEmail(email) != null) {
-            return new AuthResult(AuthResult.AuthStatus.USER_ALREADY_EXISTS, null, "User with this email already exists.");
-        }
-
-        User user = databaseService.register(username, email, password);
+        User user = databaseService.registerNewUser(username, email, password);
         if (user != null) {
             return new AuthResult(AuthResult.AuthStatus.SUCCESS, user, "Registration successful.");
         } else {
@@ -82,6 +78,7 @@ public class AuthService {
      * Logout current user
      */
     public void logout() {
+        databaseService.logoutCurrentUser();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
@@ -91,25 +88,22 @@ public class AuthService {
      * Check if user is currently logged in
      */
     public boolean isLoggedIn() {
-        return sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false);
+        return databaseService.isUserLoggedIn();
     }
     
     /**
      * Get current user email
      */
     public String getUserEmail() {
-        return sharedPreferences.getString(KEY_USER_EMAIL, null);
+        User user = databaseService.getCurrentUser();
+        return user != null ? user.getEmail() : null;
     }
     
     /**
      * Get current user details from database
      */
     public User getCurrentUser() {
-        String email = getUserEmail();
-        if (email != null) {
-            return databaseService.getUserByEmail(email);
-        }
-        return null;
+        return databaseService.getCurrentUser();
     }
     
     /**

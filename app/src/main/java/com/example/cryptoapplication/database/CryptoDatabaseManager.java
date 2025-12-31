@@ -114,6 +114,13 @@ public class CryptoDatabaseManager {
     }
     
     /**
+     * Get writable database instance
+     */
+    public android.database.sqlite.SQLiteDatabase getWritableDatabase() {
+        return dbHelper.getWritableDatabase();
+    }
+    
+    /**
      * Begin a database transaction
      */
     public void beginTransaction() {

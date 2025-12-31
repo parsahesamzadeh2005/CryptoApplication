@@ -11,12 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cryptoapplication.R;
-import com.example.cryptoapplication.database.DatabaseService;
-import com.example.cryptoapplication.models.TransactionRecord;
+import com.example.cryptoapplication.database.SimpleDatabaseService;
+import com.example.cryptoapplication.models.PortfolioItem;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 
 public class TransactionHistoryActivity extends AppCompatActivity {
 
@@ -35,16 +33,17 @@ public class TransactionHistoryActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        DatabaseService db = DatabaseService.getInstance(this);
-        List<TransactionRecord> items = db.getTransactionsForCurrentUser();
+        // Use the new SimpleDatabaseService
+        SimpleDatabaseService db = SimpleDatabaseService.getInstance(this);
+        List<PortfolioItem> transactions = db.getUserPortfolio();
 
-        if (items == null || items.isEmpty()) {
+        if (transactions == null || transactions.isEmpty()) {
             emptyState.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
         } else {
             emptyState.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
-            adapter = new TransactionAdapter(items, db);
+            adapter = new TransactionAdapter(transactions, db);
             recyclerView.setAdapter(adapter);
         }
 

@@ -1,27 +1,28 @@
 package com.example.cryptoapplication.ui.home;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.cryptoapplication.R;
+import com.example.cryptoapplication.database.SimpleDatabaseService;
 import com.example.cryptoapplication.model.home.CoinModel;
+import com.example.cryptoapplication.models.User;
+import com.example.cryptoapplication.models.PortfolioItem;
 import com.example.cryptoapplication.repository.CoinRepositoryRetrofit;
 import com.example.cryptoapplication.ui.home.adapter.CoinAdapter;
-import com.example.cryptoapplication.ui.home.adapter.ImageSliderAdapter;
 import com.example.cryptoapplication.ui.profile.ProfileActivity;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.util.ArrayList;
@@ -32,23 +33,24 @@ import java.util.concurrent.Executors;
 public class HomeActivity extends AppCompatActivity {
 
     // UI Components
-    private ViewPager2 imageSlider;
-    private LinearLayout indicatorLayout;
     private RecyclerView coinRecyclerView;
     private CircularProgressIndicator loadingProgressBar;
     private TextView errorTextView;
     private SearchView searchView;
-    private MaterialButton btnAll, btnGainers, btnLosers, btnProfile;
+    private TextView btnAll, btnGainers, btnLosers;
+    private View tabSelector;
+    private ImageView btnProfile;
+    private TextView txtTotalBalance;
+    private TextView txtBalanceChange;
 
     // Data
     private CoinAdapter coinAdapter;
     private CoinRepositoryRetrofit coinRepository;
+    private SimpleDatabaseService databaseService;
     private ExecutorService executorService;
     private Handler mainHandler;
     
     private List<CoinModel> allCoinsCache = new ArrayList<>();
-    private List<Integer> imageList = new ArrayList<>();
-    private List<ImageView> indicatorDots = new ArrayList<>();
     
     private enum TabType { ALL, GAINERS, LOSERS }
     private TabType currentTab = TabType.ALL;
@@ -60,6 +62,7 @@ public class HomeActivity extends AppCompatActivity {
         
         // Initialize services first
         coinRepository = new CoinRepositoryRetrofit();
+        databaseService = SimpleDatabaseService.getInstance(this);
         executorService = Executors.newSingleThreadExecutor();
         mainHandler = new Handler(Looper.getMainLooper());
         
@@ -68,18 +71,16 @@ public class HomeActivity extends AppCompatActivity {
         
         // Setup components
         setupRecyclerView();
-        setupImageSlider();
         setupTabs();
         setupSearch();
         setupProfileButton();
         
         // Load initial data
+        loadUserBalance();
         loadAllCoins();
     }
 
     private void initViews() {
-        imageSlider = findViewById(R.id.imageSlider);
-        indicatorLayout = findViewById(R.id.indicatorLayout);
         coinRecyclerView = findViewById(R.id.coinListRecyclerView);
         loadingProgressBar = findViewById(R.id.loadingProgressBar);
         errorTextView = findViewById(R.id.errorTextView);
@@ -87,7 +88,13 @@ public class HomeActivity extends AppCompatActivity {
         btnAll = findViewById(R.id.btnAllCoins);
         btnGainers = findViewById(R.id.btnTopGainers);
         btnLosers = findViewById(R.id.btnTopLosers);
+        tabSelector = findViewById(R.id.tabSelector);
         btnProfile = findViewById(R.id.btnProfile);
+        txtTotalBalance = findViewById(R.id.txtTotalBalance);
+        txtBalanceChange = findViewById(R.id.txtBalanceChange);
+        
+        // Set initial selector position and tab colors
+        updateTabSelection(TabType.ALL);
     }
 
     private void setupRecyclerView() {
@@ -112,59 +119,16 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    private void setupImageSlider() {
-        try {
-            imageList.add(R.drawable.slider1);
-            imageList.add(R.drawable.slider2);
-            imageList.add(R.drawable.slider3);
-
-            ImageSliderAdapter adapter = new ImageSliderAdapter(imageList);
-            imageSlider.setAdapter(adapter);
-
-            setupIndicators(imageList.size());
-            setCurrentIndicator(0);
-
-            imageSlider.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-                @Override
-                public void onPageSelected(int position) {
-                    setCurrentIndicator(position);
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void setupIndicators(int count) {
-        indicatorDots.clear();
-        indicatorLayout.removeAllViews();
-
-        for (int i = 0; i < count; i++) {
-            ImageView dot = new ImageView(this);
-            dot.setImageResource(R.drawable.indicator_inactive);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(20, 20);
-            params.setMargins(8, 0, 8, 0);
-            dot.setLayoutParams(params);
-            indicatorLayout.addView(dot);
-            indicatorDots.add(dot);
-        }
-    }
-
-    private void setCurrentIndicator(int index) {
-        for (int i = 0; i < indicatorDots.size(); i++) {
-            indicatorDots.get(i).setImageResource(
-                i == index ? R.drawable.indicator_active : R.drawable.indicator_inactive
-            );
-        }
-    }
-
     private void setupTabs() {
         View.OnClickListener tabListener = view -> {
             if (view.getId() == R.id.btnAllCoins) {
+                updateTabSelection(TabType.ALL);
                 loadAllCoins();
             } else if (view.getId() == R.id.btnTopGainers) {
+                updateTabSelection(TabType.GAINERS);
                 loadGainers();
             } else if (view.getId() == R.id.btnTopLosers) {
+                updateTabSelection(TabType.LOSERS);
                 loadLosers();
             }
         };
@@ -200,6 +164,157 @@ public class HomeActivity extends AppCompatActivity {
                 Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
                 startActivity(intent);
             });
+        }
+    }
+    
+    private void updateTabSelection(TabType selectedTab) {
+        currentTab = selectedTab;
+        
+        // Update text colors and styles
+        if (selectedTab == TabType.ALL) {
+            btnAll.setTextColor(ContextCompat.getColor(this, R.color.text_primary));
+            btnAll.setTypeface(btnAll.getTypeface(), android.graphics.Typeface.BOLD);
+            btnGainers.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
+            btnGainers.setTypeface(btnGainers.getTypeface(), android.graphics.Typeface.NORMAL);
+            btnLosers.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
+            btnLosers.setTypeface(btnLosers.getTypeface(), android.graphics.Typeface.NORMAL);
+        } else if (selectedTab == TabType.GAINERS) {
+            btnAll.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
+            btnAll.setTypeface(btnAll.getTypeface(), android.graphics.Typeface.NORMAL);
+            btnGainers.setTextColor(ContextCompat.getColor(this, R.color.text_primary));
+            btnGainers.setTypeface(btnGainers.getTypeface(), android.graphics.Typeface.BOLD);
+            btnLosers.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
+            btnLosers.setTypeface(btnLosers.getTypeface(), android.graphics.Typeface.NORMAL);
+        } else if (selectedTab == TabType.LOSERS) {
+            btnAll.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
+            btnAll.setTypeface(btnAll.getTypeface(), android.graphics.Typeface.NORMAL);
+            btnGainers.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
+            btnGainers.setTypeface(btnGainers.getTypeface(), android.graphics.Typeface.NORMAL);
+            btnLosers.setTextColor(ContextCompat.getColor(this, R.color.text_primary));
+            btnLosers.setTypeface(btnLosers.getTypeface(), android.graphics.Typeface.BOLD);
+        }
+        
+        // Animate selector position
+        animateTabSelector(selectedTab);
+    }
+    
+    private void animateTabSelector(TabType selectedTab) {
+        if (tabSelector == null) return;
+        
+        // Post to ensure layout is complete
+        tabSelector.post(() -> {
+            // Get the parent container width
+            View parent = (View) tabSelector.getParent();
+            if (parent == null) return;
+            
+            int containerWidth = parent.getWidth() - 8; // Account for padding
+            int tabWidth = containerWidth / 3; // 3 tabs
+            int targetX = 2; // Start with margin
+            
+            switch (selectedTab) {
+                case ALL:
+                    targetX = 2;
+                    break;
+                case GAINERS:
+                    targetX = tabWidth + 2;
+                    break;
+                case LOSERS:
+                    targetX = (tabWidth * 2) + 2;
+                    break;
+            }
+            
+            // Set selector width to match tab width
+            tabSelector.getLayoutParams().width = tabWidth - 4;
+            tabSelector.requestLayout();
+            
+            // Animate to target position
+            ObjectAnimator animator = ObjectAnimator.ofFloat(tabSelector, "translationX", targetX);
+            animator.setDuration(250);
+            animator.start();
+        });
+    }
+
+    private void loadUserBalance() {
+        executorService.execute(() -> {
+            try {
+                if (databaseService.isUserLoggedIn()) {
+                    User currentUser = databaseService.getCurrentUser();
+                    double cashBalance = currentUser.getBalance();
+                    
+                    // Calculate portfolio value
+                    double portfolioValue = calculatePortfolioValue();
+                    double totalBalance = cashBalance + portfolioValue;
+                    
+                    // Calculate 24h change (simplified - using a mock calculation)
+                    double changeAmount = totalBalance * 0.024; // Mock 2.4% change
+                    double changePercent = 2.4;
+                    
+                    mainHandler.post(() -> updateBalanceUI(totalBalance, changeAmount, changePercent));
+                } else {
+                    mainHandler.post(() -> updateBalanceUI(0.0, 0.0, 0.0));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                mainHandler.post(() -> updateBalanceUI(0.0, 0.0, 0.0));
+            }
+        });
+    }
+    
+    private double calculatePortfolioValue() {
+        try {
+            if (!databaseService.isUserLoggedIn()) {
+                return 0.0;
+            }
+            
+            List<PortfolioItem> portfolio = databaseService.getUserPortfolio();
+            if (portfolio == null || portfolio.isEmpty()) {
+                return 0.0;
+            }
+            
+            double totalValue = 0.0;
+            List<CoinModel> currentCoins = coinRepository.getCoins();
+            
+            if (currentCoins != null) {
+                for (PortfolioItem item : portfolio) {
+                    // Find current price for this coin
+                    for (CoinModel coin : currentCoins) {
+                        if (coin.getId().equals(item.getCoinId())) {
+                            totalValue += item.getQuantity() * coin.getCurrentPrice();
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            return totalValue;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0.0;
+        }
+    }
+    
+    private void updateBalanceUI(double totalBalance, double changeAmount, double changePercent) {
+        if (txtTotalBalance != null) {
+            txtTotalBalance.setText(String.format("$%.2f", totalBalance));
+        }
+        
+        if (txtBalanceChange != null) {
+            String changeText;
+            int textColor;
+            
+            if (changeAmount > 0) {
+                changeText = String.format("+$%.2f (+%.2f%%)", changeAmount, changePercent);
+                textColor = ContextCompat.getColor(this, R.color.green_profit);
+            } else if (changeAmount < 0) {
+                changeText = String.format("$%.2f (%.2f%%)", changeAmount, changePercent);
+                textColor = ContextCompat.getColor(this, R.color.red_loss);
+            } else {
+                changeText = "$0.00 (0.00%)";
+                textColor = ContextCompat.getColor(this, R.color.text_secondary);
+            }
+            
+            txtBalanceChange.setText(changeText);
+            txtBalanceChange.setTextColor(textColor);
         }
     }
 
@@ -326,6 +441,13 @@ public class HomeActivity extends AppCompatActivity {
             if (errorTextView != null) errorTextView.setVisibility(View.GONE);
             if (coinRecyclerView != null) coinRecyclerView.setVisibility(View.VISIBLE);
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh balance when returning to the activity
+        loadUserBalance();
     }
 
     @Override

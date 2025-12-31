@@ -25,6 +25,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".ui.profile.AssetsActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ui.home.HomeActivity"
             android:exported="false"
             />

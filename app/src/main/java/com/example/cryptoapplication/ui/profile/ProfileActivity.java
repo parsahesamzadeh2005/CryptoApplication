@@ -25,13 +25,15 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.cryptoapplication.R;
-import com.example.cryptoapplication.database.DatabaseService;
+import com.example.cryptoapplication.database.SimpleDatabaseService;
 import com.example.cryptoapplication.models.User;
 import com.example.cryptoapplication.service.AuthService;
 import com.example.cryptoapplication.ui.auth.LoginActivity;
 import com.example.cryptoapplication.ui.profile.TransactionHistoryActivity;
+import com.example.cryptoapplication.ui.profile.AssetsActivity;
 import com.example.cryptoapplication.ui.home.HomeActivity;
-import com.example.cryptoapplication.ui.home.adapter.WalletAssetsAdapter;
+import com.example.cryptoapplication.ui.home.adapter.ConsolidatedAssetsAdapter;
+import com.example.cryptoapplication.models.ConsolidatedAsset;
 import com.example.cryptoapplication.models.PortfolioItem;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -45,7 +47,7 @@ public class ProfileActivity extends AppCompatActivity {
     private Button btnAddBalance;
     private Button btnWithdraw;
     private RecyclerView walletAssetsRecyclerView;
-    private WalletAssetsAdapter walletAssetsAdapter;
+    private ConsolidatedAssetsAdapter walletAssetsAdapter;
     private View cardWalletAssets;
 
     @Override
@@ -55,7 +57,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Initialize AuthService
         authService = new AuthService(this);
-        DatabaseService databaseService = DatabaseService.getInstance(this);
+        SimpleDatabaseService databaseService = SimpleDatabaseService.getInstance(this);
 
         logOut = findViewById(R.id.layoutLogout);
         txtUsername = findViewById(R.id.txtUsername);
@@ -64,29 +66,38 @@ public class ProfileActivity extends AppCompatActivity {
         btnWithdraw = findViewById(R.id.btnWithdraw);
         walletAssetsRecyclerView = findViewById(R.id.walletAssetsRecyclerView);
         cardWalletAssets = findViewById(R.id.cardWalletAssets);
-        walletAssetsAdapter = new WalletAssetsAdapter(new java.util.ArrayList<>(), databaseService);
+        walletAssetsAdapter = new ConsolidatedAssetsAdapter(new java.util.ArrayList<>());
         walletAssetsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         walletAssetsRecyclerView.setAdapter(walletAssetsAdapter);
-        java.util.List<PortfolioItem> assetsInitial = databaseService.getPortfolio();
+        java.util.List<ConsolidatedAsset> assetsInitial = databaseService.getConsolidatedAssets();
         if (assetsInitial != null && !assetsInitial.isEmpty()) {
-            walletAssetsAdapter.updateItems(assetsInitial);
+            walletAssetsAdapter.updateAssets(assetsInitial);
             cardWalletAssets.setVisibility(View.VISIBLE);
         } else {
             cardWalletAssets.setVisibility(View.GONE);
         }
+
+        // Make assets card clickable
+        cardWalletAssets.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, AssetsActivity.class);
+            startActivity(intent);
+        });
 
         // Populate username and balance
         User currentUser = authService.getCurrentUser();
         if (currentUser != null) {
             txtUsername.setText(currentUser.getUsername());
             txtBalanceAmount.setText(String.format("$%.2f", currentUser.getBalance()));
-        } else if (databaseService.getCurrentUser() != null) {
-            User u = databaseService.getCurrentUser();
-            txtUsername.setText(u.getUsername());
-            txtBalanceAmount.setText(String.format("$%.2f", u.getBalance()));
         } else {
-            txtUsername.setText("Guest");
-            txtBalanceAmount.setText("—");
+            // Try to get user from SimpleDatabaseService directly
+            User u = databaseService.getCurrentUser();
+            if (u != null) {
+                txtUsername.setText(u.getUsername());
+                txtBalanceAmount.setText(String.format("$%.2f", u.getBalance()));
+            } else {
+                txtUsername.setText("Guest");
+                txtBalanceAmount.setText("—");
+            }
         }
 
         Button homeButton = findViewById(R.id.btnHome);
@@ -150,11 +161,11 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        DatabaseService db = DatabaseService.getInstance(this);
+        SimpleDatabaseService db = SimpleDatabaseService.getInstance(this);
         if (walletAssetsAdapter != null) {
-            java.util.List<PortfolioItem> assets = db.getPortfolio();
+            java.util.List<ConsolidatedAsset> assets = db.getConsolidatedAssets();
             if (assets != null && !assets.isEmpty()) {
-                walletAssetsAdapter.updateItems(assets);
+                walletAssetsAdapter.updateAssets(assets);
                 if (cardWalletAssets != null) cardWalletAssets.setVisibility(View.VISIBLE);
             } else {
                 if (cardWalletAssets != null) cardWalletAssets.setVisibility(View.GONE);
@@ -169,7 +180,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void showAddBalanceDialog() {
-        DatabaseService databaseService = DatabaseService.getInstance(this);
+        SimpleDatabaseService databaseService = SimpleDatabaseService.getInstance(this);
         User user = databaseService.getCurrentUser();
         if (user == null) {
             new AlertDialog.Builder(this)
@@ -194,7 +205,7 @@ public class ProfileActivity extends AppCompatActivity {
                     try {
                         double amount = Double.parseDouble(text);
                         if (amount <= 0) throw new NumberFormatException();
-                        boolean ok = databaseService.addUserBalance(amount);
+                        boolean ok = databaseService.addMoneyToBalance(amount);
                         if (ok) {
                             txtBalanceAmount.setText(String.format("$%.2f", databaseService.getCurrentUser().getBalance()));
                         } else {
@@ -217,7 +228,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void showWithdrawDialog() {
-        DatabaseService databaseService = DatabaseService.getInstance(this);
+        SimpleDatabaseService databaseService = SimpleDatabaseService.getInstance(this);
         User user = databaseService.getCurrentUser();
         if (user == null) {
             new AlertDialog.Builder(this)
@@ -242,7 +253,7 @@ public class ProfileActivity extends AppCompatActivity {
                     try {
                         double amount = Double.parseDouble(text);
                         if (amount <= 0) throw new NumberFormatException();
-                        boolean ok = databaseService.withdrawFiat(amount);
+                        boolean ok = databaseService.takeMoneyFromBalance(amount);
                         if (ok) {
                             txtBalanceAmount.setText(String.format("$%.2f", databaseService.getCurrentUser().getBalance()));
                         } else {

@@ -26,6 +26,7 @@ public class PortfolioDaoImpl implements PortfolioDao {
         ContentValues v = new ContentValues();
         v.put(CryptoDatabaseContract.PortfolioEntry.COLUMN_USER_ID, entity.getUserId());
         v.put(CryptoDatabaseContract.PortfolioEntry.COLUMN_COIN_ID, entity.getCoinId());
+        v.put(CryptoDatabaseContract.PortfolioEntry.COLUMN_AMOUNT, entity.getAmount()); // Add amount field
         v.put(CryptoDatabaseContract.PortfolioEntry.COLUMN_QUANTITY, entity.getQuantity());
         v.put(CryptoDatabaseContract.PortfolioEntry.COLUMN_PURCHASE_PRICE, entity.getPurchasePrice());
         v.put(CryptoDatabaseContract.PortfolioEntry.COLUMN_PURCHASE_DATE, entity.getPurchaseDate());
@@ -36,7 +37,10 @@ public class PortfolioDaoImpl implements PortfolioDao {
         v.put(CryptoDatabaseContract.PortfolioEntry.COLUMN_TRANSACTION_TYPE, entity.getTransactionType());
         v.put(CryptoDatabaseContract.PortfolioEntry.COLUMN_CREATED_AT, entity.getCreatedAt());
         v.put(CryptoDatabaseContract.PortfolioEntry.COLUMN_UPDATED_AT, entity.getUpdatedAt());
-        return db.insert(CryptoDatabaseContract.PortfolioEntry.TABLE_NAME, null, v);
+        
+        long result = db.insert(CryptoDatabaseContract.PortfolioEntry.TABLE_NAME, null, v);
+        System.out.println("Raw database insert result: " + result);
+        return result;
     }
 
     @Override
@@ -197,6 +201,7 @@ public class PortfolioDaoImpl implements PortfolioDao {
         item.setUserId(userId);
         item.setCoinId(coinId);
         item.setQuantity(quantity);
+        item.setAmount(quantity * pricePerCoin); // Set the amount field
         item.setPurchasePrice(pricePerCoin);
         item.setPurchaseDate(System.currentTimeMillis());
         item.setTransactionType(transactionType);
@@ -206,7 +211,10 @@ public class PortfolioDaoImpl implements PortfolioDao {
         item.setTransactionFee(0);
         item.setCreatedAt(System.currentTimeMillis());
         item.setUpdatedAt(System.currentTimeMillis());
-        return insert(item) != -1;
+        
+        long result = insert(item);
+        System.out.println("Portfolio insert result: " + result + " for user " + userId + ", coin " + coinId);
+        return result != -1;
     }
 
     @Override

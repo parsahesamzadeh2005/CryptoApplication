@@ -19,7 +19,6 @@ public class SplashScreen extends AppCompatActivity {
     
     Handler handler;
     AuthService authService;
-
     ImageView logo;
 
     @Override
@@ -33,7 +32,7 @@ public class SplashScreen extends AppCompatActivity {
         // Initialize AuthService
         authService = new AuthService(this);
 
-        handler= new Handler(Looper.getMainLooper());
+        handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -47,9 +46,9 @@ public class SplashScreen extends AppCompatActivity {
                 }
                 finish();
             }
-        }, 3000); // Reduced to 3 seconds for better UX
+        }, 3000); // 3 seconds splash duration
 
-        logo = findViewById(R.id.mainLogoLoading);
+        logo = findViewById(R.id.appLogo);
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.loader);
         logo.startAnimation(animation);
     }

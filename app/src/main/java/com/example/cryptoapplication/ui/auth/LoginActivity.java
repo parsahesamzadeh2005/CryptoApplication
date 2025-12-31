@@ -3,21 +3,16 @@ package com.example.cryptoapplication.ui.auth;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Patterns;
-import com.google.android.material.button.MaterialButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.cryptoapplication.R;
 import com.example.cryptoapplication.service.AuthService;
 import com.example.cryptoapplication.ui.home.HomeActivity;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,12 +20,11 @@ import com.example.cryptoapplication.service.AuthResult;
 
 public class LoginActivity extends AppCompatActivity {
 
-    MaterialButton loginButton;
+    LinearLayout loginButton;
     EditText emailEditText, passwordEditText;
     TextView createOneText;
     AuthService authService;
     private ExecutorService executorService;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,33 +52,33 @@ public class LoginActivity extends AppCompatActivity {
 
             // Validate email
             if (TextUtils.isEmpty(email)) {
-                emailEditText.setError("Email is required.");
+                Toast.makeText(this, "Email is required", Toast.LENGTH_SHORT).show();
                 return;
             } else if (!AuthService.isValidEmail(email)) {
-                emailEditText.setError("Please enter a valid email.");
+                Toast.makeText(this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Validate password
             if (TextUtils.isEmpty(password)) {
-                passwordEditText.setError("Password is required.");
+                Toast.makeText(this, "Password is required", Toast.LENGTH_SHORT).show();
                 return;
             } else if (!AuthService.isValidPassword(password)) {
-                passwordEditText.setError("Password must be at least 6 characters.");
+                Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Attempt login using AuthService in the background without deprecated AsyncTask
+            // Attempt login using AuthService in the background
             executorService.execute(() -> {
                 AuthResult authResult = authService.login(email, password);
                 runOnUiThread(() -> {
                     if (authResult == null) {
-                        Toast.makeText(getApplicationContext(), "An unexpected error occurred.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "An unexpected error occurred", Toast.LENGTH_LONG).show();
                         return;
                     }
                     switch (authResult.getStatus()) {
                         case SUCCESS:
-                            Toast.makeText(getApplicationContext(), "Welcome!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Welcome!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                             startActivity(intent);
                             finish();
@@ -95,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), authResult.getMessage(), Toast.LENGTH_LONG).show();
                             break;
                         default:
-                            Toast.makeText(getApplicationContext(), "An unknown error occurred.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "An unknown error occurred", Toast.LENGTH_LONG).show();
                             break;
                     }
                 });
