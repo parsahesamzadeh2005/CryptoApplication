@@ -1,44 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:padding="8dp">
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="4dp"
+    android:layout_marginHorizontal="2dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="0dp"
+    android:background="@drawable/dark_card_background">
 
-    <ImageView
-        android:id="@+id/coinImage"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="12dp"
-        android:scaleType="centerCrop"
-        android:contentDescription="Coin Image"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-
-    <TextView
-        android:id="@+id/coinName"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:text="Bitcoin"
-        android:textSize="16sp"
-        android:textColor="?attr/colorOnSurface"
-        app:layout_constraintBaseline_toBaselineOf="@+id/coinPrice"
-        app:layout_constraintStart_toEndOf="@+id/coinImage" />
+        android:background="@drawable/dark_card_background"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/coinPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="$65,000"
-        android:textSize="16sp"
-        android:textColor="?attr/colorOnSurface"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <!-- Coin Icon -->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/coinImage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/mianlogo"
+            app:civ_border_width="1dp"
+            app:civ_border_color="@color/dark_surface_variant" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Coin Info -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/coinName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bitcoin"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Bitcoin" />
+
+            <TextView
+                android:id="@+id/coinSymbol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BTC"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:layout_marginTop="2dp"
+                tools:text="BTC" />
+
+        </LinearLayout>
+
+        <!-- Price Info -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="end">
+
+            <TextView
+                android:id="@+id/coinPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$65,432.10"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="$65,432.10" />
+
+            <TextView
+                android:id="@+id/coinChange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+2.34%"
+                android:textColor="@color/green_profit"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:layout_marginTop="2dp"
+                tools:text="+2.34%" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

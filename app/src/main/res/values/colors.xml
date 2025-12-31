@@ -1,5 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Dark Theme Colors -->
+    <color name="dark_background">#0D0D1A</color>
+    <color name="dark_surface">#1A1A2E</color>
+    <color name="dark_surface_variant">#16213E</color>
+    <color name="dark_card">#1E1E3F</color>
+    
+    <!-- Purple Gradient Colors -->
+    <color name="purple_primary">#6C5CE7</color>
+    <color name="purple_secondary">#A29BFE</color>
+    <color name="purple_accent">#8B7CF6</color>
+    <color name="purple_light">#B794F6</color>
+    
+    <!-- Status Colors -->
+    <color name="green_profit">#00D4AA</color>
+    <color name="red_loss">#FF6B6B</color>
+    <color name="orange_warning">#FFA726</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B0B3B8</color>
+    <color name="text_tertiary">#6B7280</color>
+    
+    <!-- Legacy colors -->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
