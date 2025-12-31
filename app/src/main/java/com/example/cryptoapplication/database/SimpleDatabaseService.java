@@ -186,16 +186,18 @@ public class SimpleDatabaseService {
         return databaseManager.getCoinDao().getFavoritesByUser(currentLoggedInUser.getId());
     }
     
-    public boolean buyCryptocurrency(String coinId, double moneyAmount, double pricePerCoin) {
-        if (!isUserLoggedIn() || moneyAmount <= 0 || pricePerCoin <= 0) {
+    // Fixed: Now accepts coin quantity directly instead of money amount
+    public boolean buyCryptocurrency(String coinId, double coinQuantity, double pricePerCoin) {
+        if (!isUserLoggedIn() || coinQuantity <= 0 || pricePerCoin <= 0) {
             return false;
         }
         
-        if (currentLoggedInUser.getBalance() < moneyAmount) {
+        // Calculate total cost from coin quantity (not the other way around)
+        double totalCost = coinQuantity * pricePerCoin;
+        
+        if (currentLoggedInUser.getBalance() < totalCost) {
             return false;
         }
-        
-        double coinQuantity = moneyAmount / pricePerCoin;
         
         boolean portfolioUpdated = databaseManager.getPortfolioDao().addTransaction(
             currentLoggedInUser.getId(), 
@@ -209,7 +211,32 @@ public class SimpleDatabaseService {
             return false;
         }
         
-        return takeMoneyFromBalance(moneyAmount);
+        return takeMoneyFromBalance(totalCost);
+    }
+    
+    // Added: Method to handle selling specific coin quantities
+    public boolean sellCryptocurrency(String coinId, double coinQuantity, double pricePerCoin) {
+        if (!isUserLoggedIn() || coinQuantity <= 0 || pricePerCoin <= 0) {
+            return false;
+        }
+        
+        // Calculate total proceeds from coin quantity
+        double totalProceeds = coinQuantity * pricePerCoin;
+        
+        // Add sell transaction to portfolio (negative quantity for sell)
+        boolean portfolioUpdated = databaseManager.getPortfolioDao().addTransaction(
+            currentLoggedInUser.getId(), 
+            coinId, 
+            -coinQuantity, // Negative quantity indicates sell
+            pricePerCoin, 
+            "SELL"
+        );
+        
+        if (!portfolioUpdated) {
+            return false;
+        }
+        
+        return addMoneyToBalance(totalProceeds);
     }
     
     public List<PortfolioItem> getUserPortfolio() {
