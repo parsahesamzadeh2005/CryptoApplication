@@ -72,15 +72,7 @@ public class CryptoDatabaseHelper extends SQLiteOpenHelper {
             "max_supply REAL, " +
             "cached_at INTEGER);";
     
-    private static final String SQL_CREATE_SEARCH_HISTORY_TABLE =
-            "CREATE TABLE " + CryptoDatabaseContract.SearchHistoryEntry.TABLE_NAME + " (" +
-            CryptoDatabaseContract.SearchHistoryEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            CryptoDatabaseContract.SearchHistoryEntry.COLUMN_USER_ID + " INTEGER NOT NULL, " +
-            CryptoDatabaseContract.SearchHistoryEntry.COLUMN_SEARCH_QUERY + " TEXT NOT NULL, " +
-            CryptoDatabaseContract.SearchHistoryEntry.COLUMN_SEARCHED_AT + " INTEGER NOT NULL, " +
-            "FOREIGN KEY (" + CryptoDatabaseContract.SearchHistoryEntry.COLUMN_USER_ID + ") " +
-            "REFERENCES " + CryptoDatabaseContract.UserEntry.TABLE_NAME + "(" + 
-            CryptoDatabaseContract.UserEntry._ID + ") ON DELETE CASCADE);";
+    // Removed unused SQL_CREATE_SEARCH_HISTORY_TABLE - no corresponding DAO exists
     
     private static final String SQL_CREATE_PORTFOLIO_TABLE =
             "CREATE TABLE " + CryptoDatabaseContract.PortfolioEntry.TABLE_NAME + " (" +
@@ -130,17 +122,8 @@ public class CryptoDatabaseHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_COIN_CACHE_TABLE =
             "DROP TABLE IF EXISTS " + CryptoDatabaseContract.CoinCacheEntry.TABLE_NAME;
     
-    private static final String SQL_DELETE_SEARCH_HISTORY_TABLE =
-            "DROP TABLE IF EXISTS " + CryptoDatabaseContract.SearchHistoryEntry.TABLE_NAME;
-    
     private static final String SQL_DELETE_PORTFOLIO_TABLE =
             "DROP TABLE IF EXISTS " + CryptoDatabaseContract.PortfolioEntry.TABLE_NAME;
-
-    private static final String SQL_DELETE_ALERTS_TABLE =
-            "DROP TABLE IF EXISTS " + CryptoDatabaseContract.AlertEntry.TABLE_NAME;
-
-    private static final String SQL_DELETE_COIN_PRICE_HISTORY_TABLE =
-            "DROP TABLE IF EXISTS " + CryptoDatabaseContract.CoinPriceHistoryEntry.TABLE_NAME;
 
     private static final String SQL_DELETE_TRANSACTIONS_TABLE =
             "DROP TABLE IF EXISTS " + CryptoDatabaseContract.TransactionEntry.TABLE_NAME;
@@ -155,29 +138,9 @@ public class CryptoDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_USERS_TABLE);
         db.execSQL(SQL_CREATE_FAVORITE_COINS_TABLE);
         db.execSQL(SQL_CREATE_COIN_CACHE_TABLE);
-        db.execSQL(SQL_CREATE_SEARCH_HISTORY_TABLE);
         db.execSQL(SQL_CREATE_PORTFOLIO_TABLE);
         db.execSQL(SQL_CREATE_TRANSACTIONS_TABLE);
-        // Ensure tables introduced by migrations exist on fresh installs
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + CryptoDatabaseContract.AlertEntry.TABLE_NAME + " (" +
-                CryptoDatabaseContract.AlertEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                CryptoDatabaseContract.AlertEntry.COLUMN_USER_ID + " INTEGER NOT NULL, " +
-                CryptoDatabaseContract.AlertEntry.COLUMN_COIN_ID + " TEXT NOT NULL, " +
-                CryptoDatabaseContract.AlertEntry.COLUMN_ALERT_TYPE + " TEXT NOT NULL, " +
-                CryptoDatabaseContract.AlertEntry.COLUMN_TARGET_PRICE + " REAL NOT NULL, " +
-                CryptoDatabaseContract.AlertEntry.COLUMN_IS_ACTIVE + " INTEGER DEFAULT 1, " +
-                CryptoDatabaseContract.AlertEntry.COLUMN_CREATED_AT + " INTEGER NOT NULL, " +
-                CryptoDatabaseContract.AlertEntry.COLUMN_TRIGGERED_AT + " INTEGER, " +
-                "FOREIGN KEY (" + CryptoDatabaseContract.AlertEntry.COLUMN_USER_ID + ") REFERENCES " +
-                CryptoDatabaseContract.UserEntry.TABLE_NAME + "(" + CryptoDatabaseContract.UserEntry._ID + ") ON DELETE CASCADE)");
-
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + CryptoDatabaseContract.CoinPriceHistoryEntry.TABLE_NAME + " (" +
-                CryptoDatabaseContract.CoinPriceHistoryEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                CryptoDatabaseContract.CoinPriceHistoryEntry.COLUMN_COIN_ID + " TEXT NOT NULL, " +
-                CryptoDatabaseContract.CoinPriceHistoryEntry.COLUMN_PRICE + " REAL NOT NULL, " +
-                CryptoDatabaseContract.CoinPriceHistoryEntry.COLUMN_MARKET_CAP + " REAL, " +
-                CryptoDatabaseContract.CoinPriceHistoryEntry.COLUMN_VOLUME_24H + " REAL, " +
-                CryptoDatabaseContract.CoinPriceHistoryEntry.COLUMN_TIMESTAMP + " INTEGER NOT NULL)");
+        // Removed creation of unused tables (search_history, alerts, coin_price_history)
         
         // Enable foreign key constraints
         db.execSQL("PRAGMA foreign_keys=ON");
@@ -201,11 +164,9 @@ public class CryptoDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_FAVORITE_COINS_TABLE);
         db.execSQL(SQL_DELETE_PORTFOLIO_TABLE);
         db.execSQL(SQL_DELETE_TRANSACTIONS_TABLE);
-        db.execSQL(SQL_DELETE_ALERTS_TABLE);
-        db.execSQL(SQL_DELETE_SEARCH_HISTORY_TABLE);
-        db.execSQL(SQL_DELETE_COIN_PRICE_HISTORY_TABLE);
         db.execSQL(SQL_DELETE_USERS_TABLE);
         db.execSQL(SQL_DELETE_COIN_CACHE_TABLE);
+        // Removed references to unused tables
     }
     
     @Override

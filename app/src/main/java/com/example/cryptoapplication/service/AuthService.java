@@ -14,8 +14,6 @@ public class AuthService {
     
     private static final String PREF_NAME = "auth_prefs";
     private static final String KEY_IS_LOGGED_IN = "is_logged_in";
-    private static final String KEY_USER_EMAIL = "user_email";
-    private static final String KEY_USER_TOKEN = "user_token";
     
     private final SharedPreferences sharedPreferences;
     private final SimpleDatabaseService databaseService;
@@ -39,8 +37,6 @@ public class AuthService {
             // Store authentication state in SharedPreferences for quick access
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(KEY_IS_LOGGED_IN, true);
-            editor.putString(KEY_USER_EMAIL, email);
-            editor.putString(KEY_USER_TOKEN, "auth_token_" + System.currentTimeMillis());
             editor.apply();
 
             return new AuthResult(AuthResult.AuthStatus.SUCCESS, user, "Login successful.");
@@ -92,33 +88,10 @@ public class AuthService {
     }
     
     /**
-     * Get current user email
-     */
-    public String getUserEmail() {
-        User user = databaseService.getCurrentUser();
-        return user != null ? user.getEmail() : null;
-    }
-    
-    /**
      * Get current user details from database
      */
     public User getCurrentUser() {
         return databaseService.getCurrentUser();
-    }
-    
-    /**
-     * Get current user's auth token
-     */
-    public String getAuthToken() {
-        return sharedPreferences.getString(KEY_USER_TOKEN, null);
-    }
-
-    /**
-     * Backward-compatible getter used by tests
-     * Alias for getAuthToken()
-     */
-    public String getUserToken() {
-        return getAuthToken();
     }
     
     /**

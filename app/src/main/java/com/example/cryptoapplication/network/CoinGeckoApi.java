@@ -1,6 +1,6 @@
 package com.example.cryptoapplication.network;
 
-import com.example.cryptoapplication.model.home.CoinModel;
+import com.example.cryptoapplication.models.CoinModel;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;

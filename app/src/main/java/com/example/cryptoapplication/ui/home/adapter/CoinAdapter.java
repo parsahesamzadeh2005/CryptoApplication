@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.cryptoapplication.R;
-import com.example.cryptoapplication.model.home.CoinModel;
+import com.example.cryptoapplication.models.CoinModel;
 
 import java.util.List;
 

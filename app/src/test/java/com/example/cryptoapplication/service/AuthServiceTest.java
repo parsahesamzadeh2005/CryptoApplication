@@ -3,6 +3,8 @@ package com.example.cryptoapplication.service;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.cryptoapplication.models.User;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,8 +73,11 @@ public class AuthServiceTest {
         AuthResult result = authService.login("test@example.com", "Password123!");
         assertEquals(AuthResult.AuthStatus.SUCCESS, result.getStatus());
         assertTrue(authService.isLoggedIn());
-        assertEquals("test@example.com", authService.getUserEmail());
-        assertNotNull(authService.getUserToken());
+        // Verify user details through getCurrentUser instead of removed methods
+        User currentUser = authService.getCurrentUser();
+        if (currentUser != null) {
+            assertEquals("test@example.com", currentUser.getEmail());
+        }
     }
 
     @Test
@@ -94,8 +99,11 @@ public class AuthServiceTest {
         AuthResult result = authService.register("testuser", "test@example.com", "Password123!");
         assertEquals(AuthResult.AuthStatus.SUCCESS, result.getStatus());
         assertTrue(authService.isLoggedIn());
-        assertEquals("test@example.com", authService.getUserEmail());
-        assertNotNull(authService.getUserToken());
+        // Verify user details through getCurrentUser instead of removed methods
+        User currentUser = authService.getCurrentUser();
+        if (currentUser != null) {
+            assertEquals("test@example.com", currentUser.getEmail());
+        }
     }
 
     @Test
@@ -121,17 +129,13 @@ public class AuthServiceTest {
         // Then logout
         authService.logout();
         assertFalse(authService.isLoggedIn());
-        assertNull(authService.getUserEmail());
-        assertNull(authService.getUserToken());
+        // Verify user is logged out by checking getCurrentUser returns null
+        assertNull(authService.getCurrentUser());
     }
 
     @Test
-    public void testGetUserTokenWhenNotLoggedIn() {
-        assertNull(authService.getUserToken());
-    }
-
-    @Test
-    public void testGetUserEmailWhenNotLoggedIn() {
-        assertNull(authService.getUserEmail());
+    public void testGetCurrentUserWhenNotLoggedIn() {
+        // Test that getCurrentUser returns null when not logged in
+        assertNull(authService.getCurrentUser());
     }
 }

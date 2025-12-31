@@ -59,15 +59,8 @@ public final class CryptoDatabaseContract {
         public static final String COLUMN_CURRENCY = "currency";
     }
     
-    /**
-     * Search history table definition
-     */
-    public static class SearchHistoryEntry implements BaseColumns {
-        public static final String TABLE_NAME = "search_history";
-        public static final String COLUMN_USER_ID = "user_id";
-        public static final String COLUMN_SEARCH_QUERY = "search_query";
-        public static final String COLUMN_SEARCHED_AT = "searched_at";
-    }
+    // Removed unused SearchHistoryEntry, CoinPriceHistoryEntry, and AlertEntry classes
+    // These tables have no corresponding DAO classes or services
     
     /**
      * Portfolio table - tracks user's cryptocurrency holdings
@@ -89,31 +82,7 @@ public final class CryptoDatabaseContract {
         public static final String COLUMN_UPDATED_AT = "updated_at";
     }
     
-    /**
-     * Coin price history table - tracks historical price data
-     */
-    public static class CoinPriceHistoryEntry implements BaseColumns {
-        public static final String TABLE_NAME = "coin_price_history";
-        public static final String COLUMN_COIN_ID = "coin_id";
-        public static final String COLUMN_PRICE = "price";
-        public static final String COLUMN_MARKET_CAP = "market_cap";
-        public static final String COLUMN_VOLUME_24H = "volume_24h";
-        public static final String COLUMN_TIMESTAMP = "timestamp";
-    }
-    
-    /**
-     * Alerts table - tracks user price alerts
-     */
-    public static class AlertEntry implements BaseColumns {
-        public static final String TABLE_NAME = "alerts";
-        public static final String COLUMN_USER_ID = "user_id";
-        public static final String COLUMN_COIN_ID = "coin_id";
-        public static final String COLUMN_ALERT_TYPE = "alert_type"; // PRICE_ABOVE, PRICE_BELOW, PERCENTAGE_CHANGE
-        public static final String COLUMN_TARGET_PRICE = "target_price";
-        public static final String COLUMN_IS_ACTIVE = "is_active";
-        public static final String COLUMN_CREATED_AT = "created_at";
-        public static final String COLUMN_TRIGGERED_AT = "triggered_at";
-    }
+    // Removed unused CoinPriceHistoryEntry and AlertEntry classes
 
     /**
      * Transactions table - unified log for BUY and WITHDRAW actions

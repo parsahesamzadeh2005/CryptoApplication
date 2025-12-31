@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cryptoapplication.R;
 import com.example.cryptoapplication.database.SimpleDatabaseService;
-import com.example.cryptoapplication.model.home.CoinModel;
+import com.example.cryptoapplication.models.CoinModel;
 import com.example.cryptoapplication.models.User;
 import com.example.cryptoapplication.models.PortfolioItem;
 import com.example.cryptoapplication.repository.CoinRepositoryRetrofit;

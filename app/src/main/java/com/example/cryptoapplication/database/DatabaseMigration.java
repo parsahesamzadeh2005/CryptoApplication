@@ -55,84 +55,14 @@ public class DatabaseMigration {
         }
     }
     
-    /**
-     * Migration from version 2 to 3: Add coin price history table
-     */
-    public static class Migration2To3 implements Migration {
-        @Override
-        public void migrate(SQLiteDatabase db) {
-            Log.i(TAG, "Migrating database from version 2 to 3");
-            
-            // Create coin price history table
-            db.execSQL("CREATE TABLE " + CryptoDatabaseContract.CoinPriceHistoryEntry.TABLE_NAME + " (" +
-                      CryptoDatabaseContract.CoinPriceHistoryEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                      CryptoDatabaseContract.CoinPriceHistoryEntry.COLUMN_COIN_ID + " TEXT NOT NULL, " +
-                      CryptoDatabaseContract.CoinPriceHistoryEntry.COLUMN_PRICE + " REAL NOT NULL, " +
-                      CryptoDatabaseContract.CoinPriceHistoryEntry.COLUMN_MARKET_CAP + " REAL NOT NULL, " +
-                      CryptoDatabaseContract.CoinPriceHistoryEntry.COLUMN_VOLUME_24H + " REAL NOT NULL, " +
-                      CryptoDatabaseContract.CoinPriceHistoryEntry.COLUMN_TIMESTAMP + " INTEGER NOT NULL, " +
-                      "FOREIGN KEY (" + CryptoDatabaseContract.CoinPriceHistoryEntry.COLUMN_COIN_ID + ") " +
-                      "REFERENCES " + CryptoDatabaseContract.CoinCacheEntry.TABLE_NAME + "(" + 
-                      CryptoDatabaseContract.CoinCacheEntry.COLUMN_ID + ") ON DELETE CASCADE)");
-            
-            // Create index for faster queries
-            db.execSQL("CREATE INDEX idx_price_history_coin_id ON " + 
-                      CryptoDatabaseContract.CoinPriceHistoryEntry.TABLE_NAME + 
-                      "(" + CryptoDatabaseContract.CoinPriceHistoryEntry.COLUMN_COIN_ID + ")");
-            
-            db.execSQL("CREATE INDEX idx_price_history_timestamp ON " + 
-                      CryptoDatabaseContract.CoinPriceHistoryEntry.TABLE_NAME + 
-                      "(" + CryptoDatabaseContract.CoinPriceHistoryEntry.COLUMN_TIMESTAMP + ")");
-        }
-        
-        @Override
-        public int getTargetVersion() {
-            return 3;
-        }
-    }
+    // Removed unused Migration2To3 and Migration3To4 classes
+    // These migrations created tables (coin_price_history, alerts) that have no corresponding DAO classes or services
     
     /**
-     * Migration from version 3 to 4: Add alerts table
+     * Migration from version 2 to 5: Add transaction fees to portfolio
+     * (Skipped versions 3-4 as they contained unused tables)
      */
-    public static class Migration3To4 implements Migration {
-        @Override
-        public void migrate(SQLiteDatabase db) {
-            Log.i(TAG, "Migrating database from version 3 to 4");
-            
-            // Create alerts table
-            db.execSQL("CREATE TABLE " + CryptoDatabaseContract.AlertEntry.TABLE_NAME + " (" +
-                      CryptoDatabaseContract.AlertEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                      CryptoDatabaseContract.AlertEntry.COLUMN_USER_ID + " INTEGER NOT NULL, " +
-                      CryptoDatabaseContract.AlertEntry.COLUMN_COIN_ID + " TEXT NOT NULL, " +
-                      CryptoDatabaseContract.AlertEntry.COLUMN_ALERT_TYPE + " TEXT NOT NULL, " +
-                      CryptoDatabaseContract.AlertEntry.COLUMN_TARGET_PRICE + " REAL NOT NULL, " +
-                      CryptoDatabaseContract.AlertEntry.COLUMN_IS_ACTIVE + " INTEGER DEFAULT 1, " +
-                      CryptoDatabaseContract.AlertEntry.COLUMN_CREATED_AT + " INTEGER NOT NULL, " +
-                      CryptoDatabaseContract.AlertEntry.COLUMN_TRIGGERED_AT + " INTEGER, " +
-                      "FOREIGN KEY (" + CryptoDatabaseContract.AlertEntry.COLUMN_USER_ID + ") " +
-                      "REFERENCES " + CryptoDatabaseContract.UserEntry.TABLE_NAME + "(" + 
-                      CryptoDatabaseContract.UserEntry._ID + ") ON DELETE CASCADE)");
-            
-            // Create index for faster queries
-            db.execSQL("CREATE INDEX idx_alerts_user_id ON " + 
-                      CryptoDatabaseContract.AlertEntry.TABLE_NAME + 
-                      "(" + CryptoDatabaseContract.AlertEntry.COLUMN_USER_ID + ")");
-            
-            db.execSQL("CREATE INDEX idx_alerts_coin_id ON " + 
-                      CryptoDatabaseContract.AlertEntry.TABLE_NAME + 
-                      "(" + CryptoDatabaseContract.AlertEntry.COLUMN_COIN_ID + ")");
-        }
-        
-        @Override
-        public int getTargetVersion() {
-            return 4;
-        }
-    }
-    
-    /**
-     * Migration from version 4 to 5: Add transaction fees to portfolio
-     */
-    public static class Migration4To5 implements Migration {
+    public static class Migration2To5 implements Migration {
         @Override
         public void migrate(SQLiteDatabase db) {
             Log.i(TAG, "Migrating database from version 4 to 5");
@@ -246,9 +176,7 @@ public class DatabaseMigration {
     public static List<Migration> getAllMigrations() {
         List<Migration> migrations = new ArrayList<>();
         migrations.add(new Migration1To2());
-        migrations.add(new Migration2To3());
-        migrations.add(new Migration3To4());
-        migrations.add(new Migration4To5());
+        migrations.add(new Migration2To5()); // Renamed from Migration4To5
         migrations.add(new Migration5To6());
         migrations.add(new Migration6To7());
         return migrations;
@@ -288,6 +216,6 @@ public class DatabaseMigration {
      * Get the latest database version
      */
     public static int getLatestVersion() {
-        return 8; // Update this when adding new migrations
+        return 7; // Updated to reflect actual migrations
     }
 }

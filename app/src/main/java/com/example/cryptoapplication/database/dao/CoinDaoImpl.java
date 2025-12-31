@@ -459,7 +459,7 @@ public class CoinDaoImpl implements CoinDao {
         coin.setCirculatingSupply(cursor.getDouble(cursor.getColumnIndexOrThrow(CryptoDatabaseContract.CoinCache.COLUMN_CIRCULATING_SUPPLY)));
         coin.setTotalSupply(cursor.getDouble(cursor.getColumnIndexOrThrow(CryptoDatabaseContract.CoinCache.COLUMN_TOTAL_SUPPLY)));
         coin.setMaxSupply(cursor.getDouble(cursor.getColumnIndexOrThrow(CryptoDatabaseContract.CoinCache.COLUMN_MAX_SUPPLY)));
-        coin.setLastUpdated(cursor.getLong(cursor.getColumnIndexOrThrow(CryptoDatabaseContract.CoinCache.COLUMN_LAST_UPDATED)));
+        coin.setLastUpdated(cursor.getString(cursor.getColumnIndexOrThrow(CryptoDatabaseContract.CoinCache.COLUMN_LAST_UPDATED)));
         return coin;
     }
 }

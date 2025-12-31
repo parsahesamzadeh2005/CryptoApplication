@@ -1,6 +1,6 @@
 package com.example.cryptoapplication.model;
 
-import com.example.cryptoapplication.model.home.CoinModel;
+import com.example.cryptoapplication.models.CoinModel;
 
 import org.junit.Before;
 import org.junit.Test;

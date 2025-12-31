@@ -1,6 +1,6 @@
 package com.example.cryptoapplication.repository;
 
-import com.example.cryptoapplication.model.home.CoinModel;
+import com.example.cryptoapplication.models.CoinModel;
 import com.example.cryptoapplication.network.CoinGeckoApi;
 
 import org.junit.Before;
