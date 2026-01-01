@@ -14,7 +14,7 @@ This is an Android application that provides cryptocurrency market data, portfol
 - Main build configuration for the Android app
 - Defines dependencies including Retrofit for networking, Glide for image loading, and testing frameworks
 - Contains API key configuration for CoinGecko API
-- Sets minimum SDK version to 35 and target SDK to 36
+- Sets minimum SDK version to 24 (Android 7.0) and target SDK to 33 (Android 13)
 
 **`app/src/main/AndroidManifest.xml`**
 - Defines app permissions (Internet access, media reading)
@@ -220,7 +220,7 @@ This is an Android application that provides cryptocurrency market data, portfol
 ## Technology Stack
 
 - **Language**: Java
-- **Platform**: Android (API 35+)
+- **Platform**: Android (API 24+ / Android 7.0+)
 - **Networking**: Retrofit 2 + OkHttp
 - **Image Loading**: Glide
 - **Database**: SQLite
@@ -238,5 +238,5 @@ This is an Android application that provides cryptocurrency market data, portfol
 
 - Android Studio
 - Java 11+
-- Android SDK API 35+
+- Android SDK API 24+ (supports Android 7.0 through Android 13+)
 - Internet connection for API data
