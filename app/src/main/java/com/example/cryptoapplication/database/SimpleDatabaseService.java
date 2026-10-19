@@ -166,17 +166,26 @@ public class SimpleDatabaseService {
         double totalCost = quantity * price;
         String balanceKey = BALANCE_KEY + currentUser.getId();
         float currentBalance = tradingPrefs.getFloat(balanceKey, 0.0f);
-        
-        System.out.println("Need: $" + totalCost + ", Have: $" + currentBalance);
-        
-        if (currentBalance < totalCost) {
-            lastErrorMessage = "Not enough money. Need $" + totalCost + ", have $" + currentBalance;
+        double currentBalanceDouble = (double) currentBalance;
+
+        System.out.println("Need: $" + totalCost + ", Have: $" + currentBalanceDouble);
+
+        // Balance is stored as float (32-bit). When read back as double it accumulates tiny
+        // rounding errors (e.g. $325.00 stored as float becomes 325.00000007...).
+        // Use an epsilon so "buy exactly what you can afford" always succeeds.
+        double balanceEpsilon = Math.max(1e-6, currentBalanceDouble * 1e-6);
+        if (totalCost > currentBalanceDouble + balanceEpsilon) {
+            lastErrorMessage = "Not enough money. Need $" + totalCost + ", have $" + currentBalanceDouble;
             return false;
         }
-        
+        // Clamp cost to actual balance when within epsilon — prevents tiny negative balances
+        if (totalCost > currentBalanceDouble) {
+            totalCost = currentBalanceDouble;
+        }
+
         try {
-            // Step 1: Subtract money from balance
-            float newBalance = currentBalance - (float)totalCost;
+            // Step 1: Subtract money from balance; clamp to zero to absorb float rounding
+            float newBalance = Math.max(0.0f, currentBalance - (float)totalCost);
             tradingPrefs.edit().putFloat(balanceKey, newBalance).apply();
             
             // Step 2: Add to crypto holdings
