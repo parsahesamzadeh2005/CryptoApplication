@@ -181,6 +181,13 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         SimpleDatabaseService db = SimpleDatabaseService.getInstance(this);
+
+        // Refresh balance every time we return to this screen (e.g. after a sell)
+        User freshUser = db.getCurrentUser();
+        if (freshUser != null && txtBalanceAmount != null) {
+            txtBalanceAmount.setText(String.format("$%.2f", freshUser.getBalance()));
+        }
+
         if (walletAssetsAdapter != null) {
             java.util.List<ConsolidatedAsset> assets = db.getConsolidatedAssets();
             if (assets != null && !assets.isEmpty()) {
