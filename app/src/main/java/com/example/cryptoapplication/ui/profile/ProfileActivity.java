@@ -46,6 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView txtBalanceAmount;
     private Button btnAddBalance;
     private Button btnWithdraw;
+    private com.google.android.material.button.MaterialButton btnSellAssets;
     private RecyclerView walletAssetsRecyclerView;
     private ConsolidatedAssetsAdapter walletAssetsAdapter;
     private View cardWalletAssets;
@@ -77,11 +78,29 @@ public class ProfileActivity extends AppCompatActivity {
             cardWalletAssets.setVisibility(View.GONE);
         }
 
-        // Make assets card clickable
+        // Make assets card clickable — navigates to full assets list
         cardWalletAssets.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, AssetsActivity.class);
             startActivity(intent);
         });
+
+        // "Sell Assets" button inside the portfolio card
+        btnSellAssets = findViewById(R.id.btnSellAssets);
+        if (btnSellAssets != null) {
+            btnSellAssets.setOnClickListener(v -> {
+                Intent intent = new Intent(ProfileActivity.this, AssetsActivity.class);
+                startActivity(intent);
+            });
+        }
+
+        // "Sell Assets" menu row
+        LinearLayout layoutSellAssets = findViewById(R.id.layoutSellAssets);
+        if (layoutSellAssets != null) {
+            layoutSellAssets.setOnClickListener(v -> {
+                Intent intent = new Intent(ProfileActivity.this, AssetsActivity.class);
+                startActivity(intent);
+            });
+        }
 
         // Populate username and balance
         User currentUser = authService.getCurrentUser();
