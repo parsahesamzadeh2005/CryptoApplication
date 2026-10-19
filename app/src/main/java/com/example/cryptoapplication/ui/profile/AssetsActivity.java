@@ -101,15 +101,48 @@ public class AssetsActivity extends AppCompatActivity {
         txtBalance.setText("Available: " + cryptoFmt.format(totalQty)
                 + " " + asset.getCoinSymbol().toUpperCase());
 
-        // Quick-select percentage buttons fill the EditText with the corresponding fraction
-        btn25.setOnClickListener(v ->
-                etAmount.setText(cryptoFmt.format(totalQty * 0.25)));
-        btn50.setOnClickListener(v ->
-                etAmount.setText(cryptoFmt.format(totalQty * 0.50)));
-        btn75.setOnClickListener(v ->
-                etAmount.setText(cryptoFmt.format(totalQty * 0.75)));
-        btn100.setOnClickListener(v ->
-                etAmount.setText(cryptoFmt.format(totalQty)));
+        // Quick-select percentage buttons fill the EditText with the corresponding fraction.
+        // We store the precise double value in a single-element array so the confirm handler
+        // can use it directly, bypassing the DecimalFormat round-trip that causes float errors.
+        final double[] preciseAmount = {Double.NaN};
+
+        // settingFromButton guards the TextWatcher so programmatic setText from a button
+        // does not immediately wipe the precise value we just stored.
+        final boolean[] settingFromButton = {false};
+
+        btn25.setOnClickListener(v -> {
+            settingFromButton[0] = true;
+            preciseAmount[0] = totalQty * 0.25;
+            etAmount.setText(cryptoFmt.format(preciseAmount[0]));
+            settingFromButton[0] = false;
+        });
+        btn50.setOnClickListener(v -> {
+            settingFromButton[0] = true;
+            preciseAmount[0] = totalQty * 0.50;
+            etAmount.setText(cryptoFmt.format(preciseAmount[0]));
+            settingFromButton[0] = false;
+        });
+        btn75.setOnClickListener(v -> {
+            settingFromButton[0] = true;
+            preciseAmount[0] = totalQty * 0.75;
+            etAmount.setText(cryptoFmt.format(preciseAmount[0]));
+            settingFromButton[0] = false;
+        });
+        btn100.setOnClickListener(v -> {
+            settingFromButton[0] = true;
+            preciseAmount[0] = totalQty; // exact value, no formatting loss
+            etAmount.setText(cryptoFmt.format(totalQty));
+            settingFromButton[0] = false;
+        });
+        // Clear the precise cache only when the user manually edits the field,
+        // not when a button programmatically sets the text.
+        etAmount.addTextChangedListener(new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void afterTextChanged(android.text.Editable s) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!settingFromButton[0]) preciseAmount[0] = Double.NaN;
+            }
+        });
 
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(dialogView)
@@ -123,20 +156,23 @@ public class AssetsActivity extends AppCompatActivity {
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         btnConfirm.setOnClickListener(v -> {
-            // Remove thousands separators inserted by DecimalFormat before parsing
-            String raw = etAmount.getText().toString().trim().replace(",", "");
-
-            if (raw.isEmpty()) {
-                etAmount.setError("Enter a valid number");
-                return;
-            }
-
+            // If a percentage button was tapped, use the exact double value it stored to
+            // avoid DecimalFormat round-trip errors (float-precision mismatch in the DB).
             double sellQty;
-            try {
-                sellQty = Double.parseDouble(raw);
-            } catch (NumberFormatException e) {
-                etAmount.setError("Enter a valid number");
-                return;
+            if (!Double.isNaN(preciseAmount[0])) {
+                sellQty = preciseAmount[0];
+            } else {
+                String raw = etAmount.getText().toString().trim().replace(",", "");
+                if (raw.isEmpty()) {
+                    etAmount.setError("Enter a valid number");
+                    return;
+                }
+                try {
+                    sellQty = Double.parseDouble(raw);
+                } catch (NumberFormatException e) {
+                    etAmount.setError("Enter a valid number");
+                    return;
+                }
             }
 
             if (sellQty <= 0) {

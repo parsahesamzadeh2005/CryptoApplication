@@ -221,25 +221,34 @@ public class SimpleDatabaseService {
         // Check holdings
         String holdingsKey = HOLDINGS_KEY + currentUser.getId() + "_" + coinId;
         float currentHoldings = tradingPrefs.getFloat(holdingsKey, 0.0f);
-        
-        System.out.println("Want to sell: " + quantity + ", Have: " + currentHoldings);
-        
-        if (currentHoldings < quantity) {
-            lastErrorMessage = "Not enough crypto. Need " + quantity + ", have " + currentHoldings;
+        double currentHoldingsDouble = (double) currentHoldings;
+
+        System.out.println("Want to sell: " + quantity + ", Have: " + currentHoldingsDouble);
+
+        // Holdings are stored as float (32-bit), so when read back as double they accumulate
+        // tiny rounding errors (e.g. 0.00227427 stored as float becomes 0.0022742697...).
+        // Use an epsilon of 1e-7 relative to the held amount so that "sell 100%" always works.
+        double epsilon = Math.max(1e-9, currentHoldingsDouble * 1e-6);
+        if (quantity > currentHoldingsDouble + epsilon) {
+            lastErrorMessage = "Not enough crypto. Need " + quantity + ", have " + currentHoldingsDouble;
             return false;
         }
-        
+        // Clamp to actual holdings to absorb float rounding — ensures newHoldings == 0.0f on full sell
+        if (quantity > currentHoldingsDouble) {
+            quantity = currentHoldingsDouble;
+        }
+
         try {
             double totalEarned = quantity * price;
-            
+
             // Step 1: Add money to balance
             String balanceKey = BALANCE_KEY + currentUser.getId();
             float currentBalance = tradingPrefs.getFloat(balanceKey, 0.0f);
             float newBalance = currentBalance + (float)totalEarned;
             tradingPrefs.edit().putFloat(balanceKey, newBalance).apply();
-            
-            // Step 2: Subtract from crypto holdings
-            float newHoldings = currentHoldings - (float)quantity;
+
+            // Step 2: Subtract from crypto holdings; clamp tiny negatives to zero
+            float newHoldings = Math.max(0.0f, currentHoldings - (float)quantity);
             tradingPrefs.edit().putFloat(holdingsKey, newHoldings).apply();
             
             // Step 3: Save transaction record
