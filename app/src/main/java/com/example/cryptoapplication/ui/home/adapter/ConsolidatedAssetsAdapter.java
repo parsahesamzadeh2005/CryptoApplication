@@ -16,11 +16,20 @@ import java.util.List;
 
 public class ConsolidatedAssetsAdapter extends RecyclerView.Adapter<ConsolidatedAssetsAdapter.ViewHolder> {
 
+    public interface OnAssetClickListener {
+        void onAssetClick(ConsolidatedAsset asset);
+    }
+
     private final List<ConsolidatedAsset> assets;
     private final DecimalFormat cryptoFormat = new DecimalFormat("#,##0.########");
+    private OnAssetClickListener listener;
 
     public ConsolidatedAssetsAdapter(List<ConsolidatedAsset> assets) {
         this.assets = assets;
+    }
+
+    public void setOnAssetClickListener(OnAssetClickListener l) {
+        this.listener = l;
     }
 
     @NonNull
@@ -40,6 +49,10 @@ public class ConsolidatedAssetsAdapter extends RecyclerView.Adapter<Consolidated
         
         // Amount only
         holder.txtQuantity.setText(cryptoFormat.format(asset.getTotalQuantity()));
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onAssetClick(asset);
+        });
     }
 
     @Override
