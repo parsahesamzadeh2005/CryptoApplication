@@ -26,7 +26,9 @@ import com.example.cryptoapplication.ui.profile.ProfileActivity;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -273,19 +275,32 @@ public class HomeActivity extends AppCompatActivity {
             
             double totalValue = 0.0;
             List<CoinModel> currentCoins = coinRepository.getCoins();
-            
+
             if (currentCoins != null) {
+                // Aggregate net quantity per coin: BUY adds, SELL subtracts
+                Map<String, Double> netQuantities = new HashMap<>();
                 for (PortfolioItem item : portfolio) {
-                    // Find current price for this coin
+                    String type = item.getTransactionType();
+                    if ("BUY".equals(type)) {
+                        netQuantities.merge(item.getCoinId(), item.getQuantity(), Double::sum);
+                    } else if ("SELL".equals(type)) {
+                        netQuantities.merge(item.getCoinId(), -item.getQuantity(), Double::sum);
+                    }
+                }
+
+                // Multiply net quantity by current price (skip coins fully sold off)
+                for (Map.Entry<String, Double> entry : netQuantities.entrySet()) {
+                    double netQty = entry.getValue();
+                    if (netQty <= 0) continue;
                     for (CoinModel coin : currentCoins) {
-                        if (coin.getId().equals(item.getCoinId())) {
-                            totalValue += item.getQuantity() * coin.getCurrentPrice();
+                        if (coin.getId().equals(entry.getKey())) {
+                            totalValue += netQty * coin.getCurrentPrice();
                             break;
                         }
                     }
                 }
             }
-            
+
             return totalValue;
         } catch (Exception e) {
             e.printStackTrace();
