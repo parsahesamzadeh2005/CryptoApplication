@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:paddingTop="7dp"
+    android:paddingBottom="7dp">
 
     <TextView
         android:id="@+id/tvPrice"
@@ -12,7 +13,7 @@
         android:layout_weight="1"
         android:text="39,943.49"
         android:textColor="@color/red_loss"
-        android:textSize="14sp"
+        android:textSize="13sp"
         android:textStyle="bold" />
 
     <TextView
@@ -22,7 +23,7 @@
         android:layout_weight="1"
         android:text="0.0062"
         android:textColor="@color/text_secondary"
-        android:textSize="14sp"
-        android:gravity="center" />
+        android:textSize="13sp"
+        android:gravity="end" />
 
 </LinearLayout>

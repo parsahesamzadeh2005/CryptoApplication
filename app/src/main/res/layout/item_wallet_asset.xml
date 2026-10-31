@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +18,8 @@
             android:layout_weight="2"
             android:text="Bitcoin"
             android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface" />
+            android:textColor="@color/text_primary"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/txtAssetValue"
@@ -26,15 +28,17 @@
             android:layout_weight="1"
             android:text="$0.00"
             android:textStyle="bold"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
             android:gravity="end" />
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="4dp">
+        android:layout_marginTop="3dp">
 
         <TextView
             android:id="@+id/txtAssetQuantity"
@@ -42,7 +46,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="0.000000"
-            android:textColor="?attr/colorOnSurface" />
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/txtAssetPrice"
@@ -50,14 +55,16 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="$0.00"
-            android:textColor="?attr/colorOnSurface"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
             android:gravity="end" />
+
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:background="?attr/colorOutline" />
+        android:layout_marginTop="12dp"
+        android:background="@color/dark_divider" />
 
 </LinearLayout>
