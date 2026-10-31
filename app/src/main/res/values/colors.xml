@@ -1,28 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Dark Theme Colors -->
-    <color name="dark_background">#0D0D1A</color>
-    <color name="dark_surface">#1A1A2E</color>
-    <color name="dark_surface_variant">#16213E</color>
-    <color name="dark_card">#1E1E3F</color>
-    
-    <!-- Purple Gradient Colors -->
-    <color name="purple_primary">#6C5CE7</color>
-    <color name="purple_secondary">#A29BFE</color>
-    <color name="purple_accent">#8B7CF6</color>
-    <color name="purple_light">#B794F6</color>
-    
-    <!-- Status Colors -->
-    <color name="green_profit">#00D4AA</color>
-    <color name="red_loss">#FF6B6B</color>
-    <color name="orange_warning">#FFA726</color>
-    
-    <!-- Text Colors -->
-    <color name="text_primary">#FFFFFF</color>
-    <color name="text_secondary">#B0B3B8</color>
-    <color name="text_tertiary">#6B7280</color>
-    
-    <!-- Legacy colors -->
+    <!-- Background surfaces -->
+    <color name="dark_background">#0A0A0F</color>
+    <color name="dark_surface">#111118</color>
+    <color name="dark_surface_variant">#1C1C27</color>
+    <color name="dark_card">#14141E</color>
+    <color name="dark_divider">#1F1F2E</color>
+
+    <!-- Brand — single accent, no gradient spray -->
+    <color name="purple_primary">#7C5CFC</color>
+    <color name="purple_secondary">#A48AFD</color>
+    <color name="purple_accent">#7C5CFC</color>
+    <color name="purple_light">#B09EFE</color>
+    <color name="purple_surface">#1A1535</color>
+
+    <!-- Status -->
+    <color name="green_profit">#22C55E</color>
+    <color name="green_surface">#0D2618</color>
+    <color name="red_loss">#EF4444</color>
+    <color name="red_surface">#260D0D</color>
+    <color name="orange_warning">#F59E0B</color>
+
+    <!-- Text -->
+    <color name="text_primary">#F1F1F5</color>
+    <color name="text_secondary">#8A8A9A</color>
+    <color name="text_tertiary">#50505F</color>
+    <color name="text_disabled">#3A3A4A</color>
+
+    <!-- Stroke / border -->
+    <color name="stroke_default">#1F1F2E</color>
+    <color name="stroke_focus">#7C5CFC</color>
+
+    <!-- Legacy aliases so nothing breaks -->
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>

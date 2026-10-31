@@ -8,178 +8,171 @@
     android:fitsSystemWindows="true"
     tools:context=".ui.auth.LoginActivity">
 
-    <!-- Header Section -->
+    <!-- Wordmark / logo row -->
     <LinearLayout
         android:id="@+id/headerSection"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center"
-        android:padding="32dp"
-        android:layout_marginTop="48dp"
+        android:paddingStart="28dp"
+        android:paddingEnd="28dp"
+        android:layout_marginTop="64dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- App Logo -->
         <ImageView
             android:id="@+id/logoImage"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:src="@drawable/mianlogo"
-            android:contentDescription="App Logo"
-            android:layout_marginBottom="24dp" />
+            android:contentDescription="BitMax"
+            android:layout_marginBottom="32dp" />
 
-        <!-- Welcome Text -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Welcome Back"
+            android:text="Sign in"
             android:textColor="@color/text_primary"
             android:textSize="28sp"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="6dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign in to continue trading"
+            android:text="Good to have you back."
             android:textColor="@color/text_secondary"
-            android:textSize="16sp" />
+            android:textSize="15sp" />
 
     </LinearLayout>
 
-    <!-- Login Form -->
+    <!-- Form -->
     <LinearLayout
         android:id="@+id/loginForm"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="32dp"
+        android:paddingStart="28dp"
+        android:paddingEnd="28dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintTop_toBottomOf="@+id/headerSection"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Email Input -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
+        <!-- Email label -->
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp">
+            android:text="Email"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:layout_marginBottom="6dp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/dark_card_background"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="20dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="📧"
-                    android:textSize="20sp"
-                    android:layout_marginEnd="16dp" />
-
-                <EditText
-                    android:id="@+id/emailEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="Email address"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_secondary"
-                    android:textSize="16sp"
-                    android:background="@android:color/transparent"
-                    android:inputType="textEmailAddress" />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <!-- Password Input -->
-        <androidx.cardview.widget.CardView
+        <!-- Email row -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp">
+            android:layout_height="52dp"
+            android:background="@drawable/input_background"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginBottom="20dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_email"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="@null" />
+
+            <EditText
+                android:id="@+id/emailEditText"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/dark_card_background"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="20dp">
+                android:layout_weight="1"
+                android:hint="you@example.com"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_tertiary"
+                android:textSize="15sp"
+                android:background="@android:color/transparent"
+                android:inputType="textEmailAddress"
+                android:importantForAutofill="yes" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🔒"
-                    android:textSize="20sp"
-                    android:layout_marginEnd="16dp" />
+        </LinearLayout>
 
-                <EditText
-                    android:id="@+id/passwordEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="Password"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_secondary"
-                    android:textSize="16sp"
-                    android:background="@android:color/transparent"
-                    android:inputType="textPassword" />
+        <!-- Password label -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:layout_marginBottom="6dp" />
 
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <!-- Login Button -->
-        <androidx.cardview.widget.CardView
+        <!-- Password row -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp">
+            android:layout_height="52dp"
+            android:background="@drawable/input_background"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:layout_marginBottom="28dp">
 
-            <LinearLayout
-                android:id="@+id/loginButton"
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_lock"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="@null" />
+
+            <EditText
+                android:id="@+id/passwordEditText"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/gradient_purple_card"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:padding="20dp"
-                android:clickable="true"
-                android:focusable="true">
+                android:layout_weight="1"
+                android:hint="••••••••"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/text_tertiary"
+                android:textSize="15sp"
+                android:background="@android:color/transparent"
+                android:inputType="textPassword" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sign In"
-                    android:textColor="@color/text_primary"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+        </LinearLayout>
 
-            </LinearLayout>
+        <!-- Sign In button -->
+        <LinearLayout
+            android:id="@+id/loginButton"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/btn_primary"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true">
 
-        </androidx.cardview.widget.CardView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign In"
+                android:textColor="@color/text_primary"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <!-- Sign Up Link -->
+    <!-- Sign Up link -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="36dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -187,9 +180,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Don't have an account? "
+            android:text="No account? "
             android:textColor="@color/text_secondary"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/createOneText"
@@ -197,7 +190,7 @@
             android:layout_height="wrap_content"
             android:text="Sign Up"
             android:textColor="@color/purple_primary"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:clickable="true"
             android:focusable="true" />
